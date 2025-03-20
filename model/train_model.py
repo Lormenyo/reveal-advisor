@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 import joblib  # To save the model
 
 # Load data
-from data_processing import load_and_clean_data
+from data_preprocessing import load_and_clean_data
 df = load_and_clean_data("PPR-ALL.csv")
 
 # Feature engineering
@@ -23,7 +23,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# Save model
-joblib.dump(model, "property_price_model.pkl")
+# Save compressed model (gzip compression)
+joblib.dump(model, "property_price_model.pkl", compress=3)
+
 
 print("Model trained and saved successfully!")

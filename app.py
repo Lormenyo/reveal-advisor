@@ -29,14 +29,18 @@ def recommend_county():
     year = data.get("year")
     month = data.get("month")
     budget = data.get("budget")
-    
-    # Make price prediction
-    prediction = price_model.predict([[year, month]])[0]
+    salary = data.get("salary")
+
+    recommended_budget = 4 * salary  # Define affordability as 4x salary
 
     # Predict the best county based on affordability
     county_prediction = county_model.predict([[year, month, budget]])[0]
     
-    return jsonify({"recommended_county": county_prediction})
+    return jsonify({
+        "recommended_county": county_prediction,
+        "affordable_budget": round(recommended_budget, 2)
+    })
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
