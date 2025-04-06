@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import joblib
 import pandas as pd
+from LLM.reveal_rag import getLLMRecommendation
 
 app = Flask(__name__)
 
@@ -31,7 +32,7 @@ def recommend_county():
     budget = data.get("budget")
     salary = data.get("salary")
 
-    recommended_budget = 4 * salary  # Define affordability as 4x salary
+    recommended_budget = 4.5 * salary  # Define affordability as 4x salary
 
     # Predict the best county based on affordability
     county_prediction = county_model.predict([[year, month, budget]])[0]
@@ -39,6 +40,17 @@ def recommend_county():
     return jsonify({
         "recommended_county": county_prediction,
         "affordable_budget": round(recommended_budget, 2)
+    })
+
+@app.route("/recommendation", methods=["POST"])
+def getRecommendation():
+    data = request.json
+    # Extract user input
+    year = data.get("year")
+    budget = data.get("budget")
+    salary = data.get("salary")
+    return jsonify({
+        "recommendation": getLLMRecommendation(year=year, salary=salary, budget=budget),
     })
     
 
